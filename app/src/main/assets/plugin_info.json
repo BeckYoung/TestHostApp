@@ -1,0 +1,8 @@
+[
+  {
+    "pluginName": "com.example.testpluginapp",
+    "launcherActivity": "com.example.testpluginapp.activity.MainActivity",
+    "launcherParams": "",
+    "pluginService": "com.example.testpluginapp.service.CustomService"
+  }
+]

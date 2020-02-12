@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">主应用</string>
+    <string name="app_main_edit_hint">输入插件的名称，如：plugin.apk，放在手机存储根目录</string>
+    <string name="app_main_plugin_install">安装插件</string>
+    <string name="app_main_plugin_open">启动插件</string>
+    <string name="app_main_install_success">安装成功</string>
+</resources>

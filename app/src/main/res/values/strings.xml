@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TestHostApp</string>
+    <string name="app_main_edit_hint">input plugin , eg: plugin.apk</string>
+    <string name="app_main_plugin_install">plugin install</string>
+    <string name="app_main_plugin_open">plugin start</string>
+    <string name="app_main_install_success">install success</string>
+</resources>
