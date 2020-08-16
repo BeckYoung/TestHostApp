@@ -1,5 +1,5 @@
 //include ':replugin-host-library'
 //project(':replugin-host-library').projectDir = new File(settingsDir, '../../replugin-host-library/replugin-host-lib')
 
-include ':app'
+include ':app', ':aidllibrary'
 rootProject.name='TestHostApp'

@@ -6,11 +6,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.app.usage.ExternalStorageStats;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.IBinder;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
@@ -18,17 +18,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.aidllibrary.IHostInterface;
+import com.example.aidllibrary.IHostInterfaceImpl;
+import com.example.aidllibrary.V2.IHostInterfaceV2Impl;
 import com.example.testhostapp.model.PluginUseInfo;
 import com.example.testhostapp.model.PluginUseManager;
 import com.example.testhostapp.utils.LogUtils;
 import com.example.testhostapp.utils.ToastUtils;
+import com.qihoo360.replugin.IHostBinderFetcher;
 import com.qihoo360.replugin.RePlugin;
 import com.qihoo360.replugin.model.PluginInfo;
 
 import java.io.File;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, PluginEventCallback {
     private static final String TAG = "MainActivity";
     private static final String PLUGIN_NAME = "plugin.apk";
     private AppCompatEditText editText;
@@ -52,6 +56,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
         }
+        HostApplicationHelper.getInstance().getApplication().hostEventCallbacks.setCallback(this);
+        // 框架代码有问题，插件侧拿不到
+//        RePlugin.registerHostBinder(new IHostBinderFetcher() {
+//            @Override
+//            public IBinder query(String module) {
+//                LogUtils.i(TAG, "get Binder");
+//                return new IHostInterfaceImpl();
+//            }
+//        });
+        RePlugin.registerGlobalBinder("IHost", new IHostInterfaceImpl());
+        RePlugin.registerGlobalBinder("IHostV2", new IHostInterfaceV2Impl());
     }
 
     @Override
@@ -104,5 +119,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initImageView() {
         String url = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1578142230410&di=17edd80d1b94cf7b94728f37de82df0b&imgtype=0&src=http%3A%2F%2Fa.vpimg3.com%2Fupload%2Fmerchandise%2F353690%2FDUSHI-063804-0021-4.jpg";
         Glide.with(this).load(url).into(ivBelle);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        HostApplicationHelper.getInstance().getApplication().hostEventCallbacks.removeCallback(this);
+        LogUtils.i(TAG, "onDestroy");
+    }
+
+    @Override
+    public void onEvent(Intent intent) {
+        if (intent == null) {
+            return;
+        }
+        LogUtils.i(TAG, "onEvent action = ", intent.getAction());
     }
 }
